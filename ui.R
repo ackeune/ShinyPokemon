@@ -1,16 +1,28 @@
-defaultData <- read.csv("history_20190918_091616.csv")
+source("dataInput.R")
 
-minCP <- min(defaultData$CP)
-maxCP <- max(defaultData$CP)
-
-fluidPage(
-  sidebarLayout(
-    sidebarPanel(
-      numericInput("minCP", label = h3("Min CP"), value = 10),
-      numericInput("maxCP", label = h3("Max CP"), value = 1499)
-    ),
-    mainPanel(
-      tableOutput("tableCP")
-    )
-  )
-)
+dashboardPage(skin = "red",
+              dashboardHeader(title = div(img(src = ".png", height = 50, width = 50), paste("Calcy IV Shiny Dashboard", version)), titleWidth =  600),
+              dashboardSidebar( width = 200,
+                                sidebarMenu(
+                                  menuItem("Dashboard", tabName = "Dashboard", icon = icon("chart-bar")),
+                                  menuItem("Info", tabName = "Info", icon = icon("info"))
+                                )
+              ),
+              dashboardBody(
+                
+                fluidRow(
+                  tabItems(
+                    #### DASHBOARD ####
+                    tabItem(tabName = "Dashboard",
+                            # calculation details and detected properties and generators
+                            box(title = "Details scan", width = 6,
+                                tableOutput("details")
+                            ),
+                            box(title = "CP details", width = 6,
+                                DT::dataTableOutput("tableCP"),
+                                sliderInput("cpRange", label = h3("Min and Max CP"), 
+                                            min = minCP, max = maxCP, value = c(10, 1499))
+                            )
+                            ))
+                )
+))
